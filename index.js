@@ -9,6 +9,7 @@ import { response } from './config/response.js';
 import { BaseError } from './config/error.js';
 import { status } from './config/response.status.js';
 import { healthRoute } from './src/routes/health.route.js';
+import { teamsRoute } from './src/routes/team.route.js';
 
 dotenv.config();    // .env 파일 사용 (환경 변수 관리)
 
@@ -24,7 +25,7 @@ app.use(express.urlencoded({extended: false})); // 단순 객체 문자열 형�
 app.use('/api-docs', SwaggerUi.serve, SwaggerUi.setup(specs));
 
 app.use('/health', healthRoute);
-
+app.use('/teams',teamsRoute);
 app.get('/', (req, res, next) => {
     res.send(response(status.SUCCESS, "루트 페이지!"));
 })

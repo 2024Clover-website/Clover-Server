@@ -1,17 +1,20 @@
-import mysql from 'mysql2/promise';
+import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    port: process.env.DB_PORT,
-    database: process.env.DB_TABLE,
-    password: process.env.DB_PASSWORD,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-    connectTimeout: 60000
+const url = process.env.MONGODB_URL;
+const client = new MongoClient(url);
+
+// 클라이언트를 먼저 연결합니다.
+client.connect().then(() => {
+    console.log('Connected to the database');
+}).catch(error => {
+    console.error('Error connecting to the database:', error);
+    process.exit(1); // 연결 실패 시 프로세스 종료
 });
 
+// 연결된 클라이언트를 사용하여 데이터베이스에 연결하는 함수
+export async function connectToDatabase() {
+    return client.db('clover');
+}
