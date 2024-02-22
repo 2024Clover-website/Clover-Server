@@ -21,7 +21,7 @@ export const  addDocentComment= async (req,res)=>{
 export const  addShowcaseComment= async (req,res)=>{
     try {
         const time= new Date()
-        console.log("쇼케이스 댓글 추가를 요청하셨습니다.");
+        console.log("팟케스트 댓글 추가를 요청하셨습니다.");
         const data={
             "team":req.params.teamId,
             "comment":req.body.comment,
