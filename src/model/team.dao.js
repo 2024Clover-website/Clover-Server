@@ -42,14 +42,14 @@ export const joinShowcaseComment=async(data)=>{
         console.log(team);
         const teamId=team._id;
 
-        const docentCollection=conn.collection('showcase');
+        const docentCollection=conn.collection('podcast');
         const docent=await docentCollection.findOne({team_id:teamId});
         const docentId=docent._id;
 
         const commentCollection=conn.collection('comment');
         const result = await commentCollection.insertOne({
             team_id:teamId,
-            type:"showcase",
+            type:"podcast",
             comment:data.comment,
             created_at:data.created_at
         })

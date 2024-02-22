@@ -8,7 +8,7 @@ teamsRoute.post('/:teamId/comment/docent',async(req,res)=>{
     const result = await addDocentComment(req,res);
 })
 
-teamsRoute.post('/:teamId/comment/showcase',async(req,res)=>{
+teamsRoute.post('/:teamId/comment/podcast',async(req,res)=>{
     const result =await addShowcaseComment(req,res);
 })
 
