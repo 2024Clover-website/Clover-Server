@@ -1,6 +1,7 @@
 import { BaseError } from "../../config/error.js";
 import {status} from "../../config/response.status.js"
-import {joinDocentComment,joinShowcaseComment,getComment} from "../model/team.dao.js"
+import { getPodcast } from "../controllers/team.controller.js";
+import {joinDocentComment,joinShowcaseComment,getComment,getDocentInformation,getPodcastInformation} from "../model/team.dao.js"
 
 export const insertDocentComment= async (data)=>{
     const getCommentData=await joinDocentComment(data);
@@ -16,4 +17,13 @@ export const insertShowcaseComment= async (data)=>{
 export const viewComment=async(data)=>{
     const getCommentData=await getComment(data);
     return getCommentData;
+}
+
+export const viewDocent=async(data)=>{
+    const getDocentData=await getDocentInformation(data);
+    return getDocentData;
+}
+export const viewPodcast=async(data)=>{
+    const getPodcastData=await getPodcastInformation(data);
+    return getPodcastData;
 }
