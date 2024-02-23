@@ -2,7 +2,7 @@
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import {insertDocentComment,insertShowcaseComment,viewComment} from "../service/team.service.js"
-
+import { viewDocent,viewPodcast } from "../service/team.service.js";
 
 export const  addDocentComment= async (req,res)=>{
     try {
@@ -40,6 +40,28 @@ export const getComment=async(req,res)=>{
         }
         res.send(response(status.SUCCESS,await viewComment(data)));
     }catch(error){
+        res.send(response(status.BAD_REQUEST,error));
+    }
+}
+
+export const getDocent= async(req,res)=>{
+    try {
+        const data={
+            "team":req.params.teamId
+        }
+        res.send(response(status.SUCCESS,await viewDocent(data)));
+    } catch (error) {
+        res.send(response(status.BAD_REQUEST,error));
+    }
+}
+
+export const getPodcast = async(req,res)=>{
+    try {
+        const data={
+            "team":req.params.teamId
+        }
+        res.send(response(status.SUCCESS,await viewPodcast(data)));
+    } catch (error) {
         res.send(response(status.BAD_REQUEST,error));
     }
 }

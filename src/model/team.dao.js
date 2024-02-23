@@ -78,3 +78,71 @@ export const getComment=async(data)=>{
         
     }
 }
+export const getDocentInformation=async(data)=>{
+    try {
+        console.log(data);
+        const conn=await connectToDatabase();
+        const teamCollection=conn.collection('teams');
+        const teamNumber=Number(data.team)
+        const team= await teamCollection.findOne({_id:teamNumber});
+        console.log(team);
+        const teamId=team._id;
+        const docentCollection=conn.collection('docent');
+        const docentData=await docentCollection.find({teamId:teamId}).toArray();
+        console.log("도슨트 데이터",docentData);
+        const usersCollection=conn.collection('player');
+        const userData=await usersCollection.find({team_id:data.team}).toArray();
+        console.log("유저 데이터",userData);
+        const result={
+            "title":docentData[0].title,
+            "record":docentData[0].record,
+            "member":userData
+        }
+        console.log("결과",result);
+        return result
+
+    } catch (error) {
+        console.error(error);
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+}
+
+export const getPodcastInformation=async(data)=>{
+    try {
+        console.log(data);
+        const conn=await connectToDatabase();
+        const teamCollection=conn.collection('teams');
+        const teamNumber=Number(data.team)
+        const team= await teamCollection.findOne({_id:teamNumber});
+        console.log(team);
+        const teamId=team._id;
+        const podcastCollection=conn.collection('podcast');
+        const podcastData=await podcastCollection.find({team_id:teamId}).toArray();
+        console.log("도슨트 데이터",podcastData);
+        const usersCollection=conn.collection('player');
+        const userData=await usersCollection.find({team_id:data.team}).toArray();
+        console.log("유저 데이터",userData);
+        if(teamNumber===5){
+            const userDataResult=await usersCollection.find({team_id:"6"}).toArray()
+            for(let i=0;i<userDataResult.length;i++){
+                userData.push(userDataResult[i]);
+            }
+            
+        }else if (teamNumber===6){
+            const userDataResult=await usersCollection.find({team_id:"5"}).toArray()
+            userData.push(userDataResult[0]);
+        }
+        console.log("유저 데이터",userData);
+        const result={
+            "title":podcastData[0].title,
+            "record":podcastData[0].record,
+            "member":userData
+        }
+        console.log("결과",result);
+        return result
+    } catch (error) {
+        console.error(error);
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+
+}
