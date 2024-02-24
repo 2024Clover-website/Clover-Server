@@ -146,3 +146,93 @@ export const getPodcastInformation=async(data)=>{
     }
 
 }
+export const getDocentScriptInformation=async(data)=>{
+    try {
+        console.log(data);
+        const conn=await connectToDatabase();
+        const scriptCollection= conn.collection('script');
+        const scriptData= await scriptCollection.find({team_id:data.team,type_name:"도슨트"}).toArray()
+        const usersCollection= conn.collection('player');
+        const teamNumber=Number(data.team)
+        const result=[];
+        for(let i=0; i<scriptData.length;i++){
+            const userData=await usersCollection.find({team_id:data.team,name:scriptData[i].user1}).toArray();
+            result.push({
+                "start_time":scriptData[i].start_time,
+                "end_time":scriptData[i].end_time,
+                "script":scriptData[i].script,
+                "user":scriptData[i].user1,
+                "profile":userData.profile
+            })
+            
+        }
+
+        
+        console.log("결과",result);
+        return result
+    } catch (error) {
+        console.error(error);
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+}
+export const getPodcastScriptInformation=async(data)=>{
+    try {
+        console.log(data);
+        const conn=await connectToDatabase();
+        let teamNumber=Number(data.team)
+        
+        const scriptCollection= conn.collection('script');
+        const scriptData= await scriptCollection.find({team_id:data.team,type_name:"팟캐스트"}).toArray()
+        console.log("스크립트",scriptData);
+        const usersCollection= conn.collection('player');
+        const usersData=[];
+        if(teamNumber===6||teamNumber===5){
+            teamNumber=5;
+            const users=await usersCollection.find({team_id:data.team},{team_id:6}).toArray();
+            console.log("유저데이터",users);
+            for(let i=0;i<users.length;i++){
+                usersData.push(
+                    users[i].profile
+                )
+            }
+        }else{
+            const users=await usersCollection.find({team_id:data.team}).toArray();
+            console.log("유저데이터",users);
+            for(let i=0;i<users.length;i++){
+                usersData.push(
+                    users[i].profile
+                )
+            }
+        }
+
+        const result=[];
+        for(let i =0; i<scriptData.length;i++){
+            if(scriptData[i].user1.includes('모두')){
+                result.push({
+                    "start_time":scriptData[i].start_time,
+                    "end_time":scriptData[i].end_time,
+                    "script":scriptData[i].script,
+                    "user":scriptData[i].user1,
+                    "profile":usersData
+                })
+            }else{
+                const user=[]
+                const userInformaition=await usersCollection.find({"name":scriptData[i].user1}).toArray();
+                // console.log("유저정보",userInformaition);
+                user.push(userInformaition[0].profile);
+                result.push({
+                    "start_time":scriptData[i].start_time,
+                    "end_time":scriptData[i].end_time,
+                    "script":scriptData[i].script,
+                    "user":scriptData[i].user1,
+                    "profile":user
+                })
+            }
+        }
+        // console.log("결과",result);
+        return result;
+    } catch (error) {
+        console.error(error);
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+}
