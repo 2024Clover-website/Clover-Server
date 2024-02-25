@@ -166,6 +166,7 @@ export const getDocentScriptInformation=async(data)=>{
             result.push({
                 "start_time":scriptData[i].start_time,
                 "end_time":scriptData[i].end_time,
+                "spend_time":scriptData[i].end_time-scriptData[i].start_time,
                 "script":scriptData[i].script,
                 "user":scriptData[i].user1,
                 "profile":user
@@ -217,6 +218,7 @@ export const getPodcastScriptInformation=async(data)=>{
                 result.push({
                     "start_time":scriptData[i].start_time,
                     "end_time":scriptData[i].end_time,
+                    "spend_time":scriptData[i].end_time-scriptData[i].start_time,
                     "script":scriptData[i].script,
                     "user":scriptData[i].user1,
                     "profile":usersData
@@ -229,6 +231,7 @@ export const getPodcastScriptInformation=async(data)=>{
                 result.push({
                     "start_time":scriptData[i].start_time,
                     "end_time":scriptData[i].end_time,
+                    "spend_time":scriptData[i].end_time-scriptData[i].start_time,
                     "script":scriptData[i].script,
                     "user":scriptData[i].user1,
                     "profile":user
@@ -265,7 +268,8 @@ export const addScriptDao=async(data)=>{
     let typeName=""
     const typeData=[];
     if(data.type.includes("podcast")){
-         const typeId=await podcastCollection.findOne({team_id:teamId});
+        const typeId=await docentCollection.find({teamId:teamId}).toArray();
+        typeData.push(typeId[0])
          typeName="팟캐스트"
     }else{
         const typeId=await docentCollection.find({teamId:teamId}).toArray();
