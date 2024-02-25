@@ -151,18 +151,22 @@ export const getDocentScriptInformation=async(data)=>{
         console.log(data);
         const conn=await connectToDatabase();
         const scriptCollection= conn.collection('script');
-        const scriptData= await scriptCollection.find({team_id:data.team,type_name:"도슨트"}).toArray()
+        const scriptData= await scriptCollection.find({team_id:Number(data.team),type_name:"도슨트"}).toArray()
         const usersCollection= conn.collection('player');
-        const teamNumber=Number(data.team)
+        const teamNumber=Number(data.team);
+        console.log("도슨트 데이터",scriptData);
         const result=[];
         for(let i=0; i<scriptData.length;i++){
-            const userData=await usersCollection.find({team_id:data.team,name:scriptData[i].user1}).toArray();
+            const user=[]
+            const userInformaition=await usersCollection.find({"name":scriptData[i].user1}).toArray();
+            // console.log("유저정보",userInformaition);
+            user.push(userInformaition[0].profile);
             result.push({
                 "start_time":scriptData[i].start_time,
                 "end_time":scriptData[i].end_time,
                 "script":scriptData[i].script,
                 "user":scriptData[i].user1,
-                "profile":userData.profile
+                "profile":user
             })
             
         }
@@ -235,4 +239,49 @@ export const getPodcastScriptInformation=async(data)=>{
         console.error(error);
         throw new BaseError(status.PARAMETER_IS_WRONG);
     }
+}
+
+export const addScriptDao=async(data)=>{
+
+    const timeStampData=[];
+    for(let i=0;i<data.segments.length;i++){
+        timeStampData.push({
+            "start_time":data.segments[i].start/1000,
+            "end_time":data.segments[i].end/1000,
+            "text":data.segments[i].textEdited
+        })
+    }
+    const conn=await connectToDatabase();
+    const docentCollection= conn.collection('docent');
+    const podcastCollection=conn.collection('podcast');
+    const teamCollection=conn.collection('teams');
+    const teamNumber=Number(data.team)
+    const team= await teamCollection.findOne({_id:teamNumber});
+    console.log(team);
+    const teamId=team._id;
+    
+    let typeName=""
+    const typeData=[];
+    if(data.type.includes("podcast")){
+         const typeId=await podcastCollection.findOne({team_id:teamId});
+         typeName="팟캐스트"
+    }else{
+        const typeId=await docentCollection.find({teamId:teamId}).toArray();
+        typeData.push(typeId[0])
+        
+        typeName="도슨트"
+    }
+    const scriptCollection=conn.collection('script');
+    for(let i =0; i<timeStampData.length;i++){
+        
+        const scriptData=await scriptCollection.insertOne({
+            "start_time":timeStampData[i].start_time,
+            "end_time":timeStampData[i].end_time,
+            "script":timeStampData[i].text,
+            "team_id":teamId,
+            "type_id":typeData[0]._id,
+            "type_name":typeName
+        })
+    }
+    return "success";
 }

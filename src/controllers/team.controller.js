@@ -3,7 +3,7 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import {insertDocentComment,insertShowcaseComment,viewComment} from "../service/team.service.js"
 import { viewDocent,viewPodcast,viewDocentScript,viewPodcastScript} from "../service/team.service.js";
-
+import {addScriptDao} from "../model/team.dao.js"
 export const  addDocentComment= async (req,res)=>{
     try {
         const time= new Date()
@@ -84,5 +84,17 @@ export const getPodcastScript= async(req,res)=>{
         res.send(response(status.SUCCESS,await viewPodcastScript(data)));
     } catch (error) {
         res.send(response(status.BAD_REQUEST,error));
+    }
+}
+export const addScirpt=async(req,res)=>{
+    try {
+        const data={
+            "team":req.params.teamId,
+            "type":req.params.type,
+            "segments":req.body.segments
+        }
+        res.send(response(status.SUCCESS,await addScriptDao(data)));
+    } catch (error) {
+        
     }
 }

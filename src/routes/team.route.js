@@ -1,6 +1,6 @@
 import express from "express";
 import {addDocentComment, addShowcaseComment,getComment} from "../controllers/team.controller.js";
-import {getDocent,getPodcast,getDocentScript,getPodcastScript} from "../controllers/team.controller.js";
+import {getDocent,getPodcast,getDocentScript,getPodcastScript,addScirpt} from "../controllers/team.controller.js";
 
 export const teamsRoute=express.Router();
 
@@ -27,4 +27,7 @@ teamsRoute.get('/:teamId/docent/script',async(req,res)=>{
 })
 teamsRoute.get('/:teamId/podcast/script',async(req,res)=>{
     const result= await getPodcastScript(req,res);
+})
+teamsRoute.post('/:teamId/:type/script',async(req,res)=>{
+    const result = await addScirpt(req,res);
 })
