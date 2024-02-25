@@ -91,11 +91,12 @@ export const getDocentInformation=async(data)=>{
         const docentData=await docentCollection.find({teamId:teamId}).toArray();
         console.log("도슨트 데이터",docentData);
         const usersCollection=conn.collection('player');
-        const userData=await usersCollection.find({team_id:data.team}).toArray();
+        const userData=await usersCollection.find({team_id:data.team,leader:"1"}).toArray();
         console.log("유저 데이터",userData);
         const result={
             "title":docentData[0].title,
             "record":docentData[0].record,
+            "background":docentData[0].background,
             "member":userData
         }
         console.log("결과",result);
@@ -135,6 +136,7 @@ export const getPodcastInformation=async(data)=>{
         console.log("유저 데이터",userData);
         const result={
             "title":podcastData[0].title,
+            "background":podcastData[0].background,
             "record":podcastData[0].record,
             "member":userData
         }
