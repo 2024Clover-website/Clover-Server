@@ -189,7 +189,7 @@ export const getPodcastScriptInformation=async(data)=>{
         let teamNumber=Number(data.team)
         
         const scriptCollection= conn.collection('script');
-        const scriptData= await scriptCollection.find({team_id:data.team,type_name:"팟캐스트"}).toArray()
+        const scriptData= await scriptCollection.find({team_id:teamNumber,type_name:"팟캐스트"}).toArray()
         console.log("스크립트",scriptData);
         const usersCollection= conn.collection('player');
         const usersData=[];
