@@ -87,6 +87,8 @@ export const getDocentInformation=async(data)=>{
         const team= await teamCollection.findOne({_id:teamNumber});
         console.log(team);
         const teamId=team._id;
+        const commentCollection=conn.collection('comment');
+        const podcastComment=await commentCollection.find({"team_id":teamNumber,"type":"docent"}).toArray();
         const docentCollection=conn.collection('docent');
         const docentData=await docentCollection.find({teamId:teamId}).toArray();
         console.log("도슨트 데이터",docentData);
@@ -97,7 +99,8 @@ export const getDocentInformation=async(data)=>{
             "title":docentData[0].title,
             "record":docentData[0].record,
             "background":docentData[0].background,
-            "member":userData
+            "member":userData,
+            "comment_count":podcastComment.length
         }
         console.log("결과",result);
         return result
@@ -117,6 +120,8 @@ export const getPodcastInformation=async(data)=>{
         const team= await teamCollection.findOne({_id:teamNumber});
         console.log(team);
         const teamId=team._id;
+        const commentCollection=conn.collection('comment');
+        const podcastComment=await commentCollection.find({"team_id":teamNumber,"type":"docent"}).toArray();
         const podcastCollection=conn.collection('podcast');
         const podcastData=await podcastCollection.find({team_id:teamId}).toArray();
         console.log("도슨트 데이터",podcastData);
@@ -138,7 +143,8 @@ export const getPodcastInformation=async(data)=>{
             "title":podcastData[0].title,
             "background":podcastData[0].background,
             "record":podcastData[0].record,
-            "member":userData
+            "member":userData,
+            "comment_count":podcastComment.length
         }
         console.log("결과",result);
         return result
@@ -157,6 +163,7 @@ export const getDocentScriptInformation=async(data)=>{
         const usersCollection= conn.collection('player');
         const teamNumber=Number(data.team);
         console.log("도슨트 데이터",scriptData);
+        
         const result=[];
         for(let i=0; i<scriptData.length;i++){
             const user=[]
@@ -169,6 +176,7 @@ export const getDocentScriptInformation=async(data)=>{
                 "spend_time":scriptData[i].end_time-scriptData[i].start_time,
                 "script":scriptData[i].script,
                 "user":scriptData[i].user1,
+                
                 "profile":user
             })
             
@@ -187,6 +195,7 @@ export const getPodcastScriptInformation=async(data)=>{
         console.log(data);
         const conn=await connectToDatabase();
         let teamNumber=Number(data.team)
+        let teamString=data.team
         
         const scriptCollection= conn.collection('script');
         const scriptData= await scriptCollection.find({team_id:data.team,type_name:"팟캐스트"}).toArray()
@@ -195,7 +204,8 @@ export const getPodcastScriptInformation=async(data)=>{
         const usersData=[];
         if(teamNumber===6||teamNumber===5){
             teamNumber=5;
-            const users=await usersCollection.find({team_id:data.team},{team_id:6}).toArray();
+            teamString="5";
+            const users=await usersCollection.find({team_id:teamString},{team_id:6}).toArray();
             console.log("유저데이터",users);
             for(let i=0;i<users.length;i++){
                 usersData.push(
