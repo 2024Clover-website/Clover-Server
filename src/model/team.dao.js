@@ -121,7 +121,7 @@ export const getPodcastInformation=async(data)=>{
         console.log(team);
         const teamId=team._id;
         const commentCollection=conn.collection('comment');
-        const podcastComment=await commentCollection.find({"team_id":teamNumber,"type":"docent"}).toArray();
+        const podcastComment=await commentCollection.find({"team_id":teamNumber,"type":"podcast"}).toArray();
         const podcastCollection=conn.collection('podcast');
         const podcastData=await podcastCollection.find({team_id:teamId}).toArray();
         console.log("도슨트 데이터",podcastData);
